@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@100..900&display=swap');
+
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: light --default;
+}
+
+@plugin "daisyui/theme" {
+  name: "light";
+  default: true;
+  --color-primary: #19A48E;
+  --color-secondary: #d9578d;
+}
+
+body {
+  font-family: "Urbanist", sans-serif;
+}
+
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 16px;
+  font-weight: bold;
+  font-size: 16px;
+  border-radius: 12px;
+  color: gray;
+  position: relative;
+
+  transition: all 0.25s ease;
+}
+
+/* Background hover effect */
+.nav-link::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #e9f9f7, #dff7f4);
+  opacity: 0;
+  border-radius: inherit;
+  transform: scale(0.9);
+  transition: all 0.3s ease;
+  z-index: -1;
+}
+
+/* HOVER */
+.nav-link:hover {
+  color: #1ca08e;
+}
+
+.nav-link:hover::before {
+  opacity: 1;
+  transform: scale(1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* ACTIVE NavLink */
+.nav-link.active {
+  font-weight: 600;
+  color: #1ca08e;
+}
+
+.nav-link.active::before {
+  opacity: 1;
+  transform: scale(1);
+  box-shadow: 0 5px 14px rgba(0,0,0,0.12);
+}
