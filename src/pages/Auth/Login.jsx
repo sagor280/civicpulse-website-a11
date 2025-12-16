@@ -8,10 +8,11 @@ import { FaEye, FaRegEyeSlash } from "react-icons/fa";
 import Logo from "../../Component/Logo/Logo";
 import useAuth from "../../hooks/useAuth";
 import toast from "react-hot-toast";
+import SocialPages from "./SocialPages";
 
 const Login = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
-  const { signIn, signInWithGoogle, loading } = useAuth();
+  const { signIn, loading } = useAuth();
   const [show, setShow] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -31,19 +32,7 @@ const Login = () => {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    try {
-      await signInWithGoogle();
-      toast.success("Login Successful");
-
-      const redirectTo = location.state || "/";
-      navigate(redirectTo, { replace: true });
-
-    } catch (error) {
-      console.log(error);
-      toast.error(error.message || "Google Login Failed");
-    }
-  };
+  
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
@@ -131,14 +120,7 @@ const Login = () => {
             <span className="h-px bg-gray-300 w-1/3"></span>
           </div>
 
-          {/* Google Login */}
-          <button
-            onClick={handleGoogleLogin}
-            className="w-full border border-gray-300 py-3 rounded-xl flex items-center justify-center gap-3 hover:bg-gray-50 transition shadow-sm"
-          >
-            <FcGoogle className="text-xl" />
-            Continue with Google
-          </button>
+          <SocialPages/>
 
           {/* Sign up redirect */}
           <p className="text-center mt-6 text-gray-600">

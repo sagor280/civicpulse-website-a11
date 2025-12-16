@@ -16,7 +16,6 @@ body {
   font-family: "Urbanist", sans-serif;
 }
 
-
 .nav-link {
   display: flex;
   align-items: center;
@@ -27,7 +26,6 @@ body {
   border-radius: 12px;
   color: gray;
   position: relative;
-
   transition: all 0.25s ease;
 }
 
