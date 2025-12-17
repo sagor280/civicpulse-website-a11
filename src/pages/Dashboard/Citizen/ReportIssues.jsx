@@ -3,8 +3,11 @@ import { useForm } from "react-hook-form";
 import { MapPin } from "lucide-react";
 import { uploadImageToImgbb } from "../../../utils/uploadImage";
 import useAuth from "../../../hooks/useAuth";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import toast from "react-hot-toast";
 
 const ReportIssues = () => {
+  const axiosSecure = useAxiosSecure();
   const {
     register,
     handleSubmit,
@@ -17,6 +20,7 @@ const ReportIssues = () => {
   
 
   const onSubmit = async (data) => {
+    try{
     const { title, description, category, location, image } = data;
     const imageFile = image[0];
     const imageUrl = await uploadImageToImgbb(imageFile);
@@ -29,12 +33,12 @@ const ReportIssues = () => {
       email:user.email,
       
     };
-    console.table(issueData);
-
-    // 🔹 later: send data to server
-    // axios.post("/issues", data)
-
-    reset(); // form clear
+     await axiosSecure.post("/issues", issueData);
+    toast.success("Issue reported successfully");
+    reset();
+  } catch (error) {
+    toast.error("Failed to report issue");
+  }
   };
 
   return (

@@ -8,6 +8,7 @@ import PrivateRoute from "./PrivateRoute";
 import MyIssues from "../pages/Dashboard/Citizen/MyIssues";
 import ReportIssues from "../pages/Dashboard/Citizen/ReportIssues";
 import Profile from "../pages/Common/Profile";
+import AssignedIssues from "../pages/Dashboard/Staff/AssignedIssues";
 
 
 
@@ -44,6 +45,15 @@ export const router = createBrowserRouter([
       {
         path:'profile',
         Component:Profile
+      },
+
+
+
+
+      {
+        path:'/dashboard/assigned-issue',
+        element:<AssignedIssues></AssignedIssues>
+
       }
     ]
   }

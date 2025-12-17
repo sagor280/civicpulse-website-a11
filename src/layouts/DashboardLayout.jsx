@@ -5,8 +5,11 @@ import { LuFileText } from "react-icons/lu";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
 import { BsLayoutSidebar } from "react-icons/bs";
+import { MdAssignmentAdd, MdManageAccounts, MdOutlineAssignmentLate, MdOutlinePayment, MdReport } from 'react-icons/md';
+import useRole from "../hooks/useRoll";
 
 const DashboardLayout = () => {
+  const {role} = useRole()
   return (
     <div className="drawer lg:drawer-open max-w-7xl mx-auto">
       <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
@@ -52,8 +55,11 @@ const DashboardLayout = () => {
               />
             </Link>
 
-            {/* Overview */}
-            <li>
+           {/* user dashbard links */}
+
+            {
+              role==='citizen'&& <>
+              <li>
               <NavLink
                 to="/dashboard"
                 end
@@ -100,6 +106,56 @@ const DashboardLayout = () => {
                 <span className="is-drawer-close:hidden text-[15px]">My Profile</span>
               </NavLink>
             </li>
+              
+              </>
+            }
+            {/* Staff Dashboard */}
+            {
+              role==='staff'&& <>
+              <li>
+              <NavLink
+                to="/dashboard"
+                end
+                className="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-300 hover:bg-white/20 text-base is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                data-tip="Overview"
+              >
+                <LayoutDashboard className="text-xl" />
+                <span className="is-drawer-close:hidden text-[15px]">Overview</span>
+              </NavLink>
+            </li>
+
+            {/* Assigned issue */}
+
+            <li>
+              <NavLink
+                to="/dashboard/assigned-issue"
+                end
+                className="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-300 hover:bg-white/20 text-base is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                data-tip="Assigned issue"
+              >
+                <MdAssignmentAdd className="text-xl" />
+                <span className="is-drawer-close:hidden text-[15px]">Assigned issue</span>
+              </NavLink>
+            </li>
+            
+            {/* My Profile */}
+            <li>
+              <NavLink
+                to="/dashboard/profile"
+                className="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-300 hover:bg-white/20 text-base is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                data-tip="My Profile"
+              >
+                <CgProfile className="text-xl" />
+                <span className="is-drawer-close:hidden text-[15px]">My Profile</span>
+              </NavLink>
+            </li>
+
+
+
+              
+              </>
+            }
+            
 
           </ul>
         </div>
