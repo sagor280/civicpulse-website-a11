@@ -9,6 +9,8 @@ import MyIssues from "../pages/Dashboard/Citizen/MyIssues";
 import ReportIssues from "../pages/Dashboard/Citizen/ReportIssues";
 import Profile from "../pages/Common/Profile";
 import AssignedIssues from "../pages/Dashboard/Staff/AssignedIssues";
+import PaymentSuccess from "../pages/Dashboard/Payment/PaymentSuccess";
+import PaymentCancelled from "../pages/Dashboard/Payment/PaymentCancelled";
 
 
 
@@ -45,6 +47,15 @@ export const router = createBrowserRouter([
       {
         path:'profile',
         Component:Profile
+      },
+      {
+        path:'payment-success',
+        element:<PaymentSuccess></PaymentSuccess>
+
+      },
+      {
+        path:'payment-cancelled',
+        element:<PaymentCancelled></PaymentCancelled>
       },
 
 

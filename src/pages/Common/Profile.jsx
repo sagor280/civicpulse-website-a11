@@ -7,11 +7,13 @@ import LoadingSpinner from "../../Component/LoadingSpinner/LoadingSpinner";
 
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
+import { uploadImageToImgbb } from "../../utils/uploadImage";
 
 const Profile = () => {
   const { user, updateUserProfile } = useAuth();
   const axiosSecure = useAxiosSecure();
   const [loading, setLoading] = useState(false);
+  const [photoFile, setPhotoFile] = useState(null);
 
   // 🔹 Load profile from DB
   const { data: profile = [], isLoading, refetch } = useQuery({
@@ -24,8 +26,9 @@ const Profile = () => {
   });
 
   if (isLoading) return <LoadingSpinner />;
-
   const currentUser = profile[0];
+
+   const handlePhotoChange = (e) => setPhotoFile(e.target.files[0]);
 
   // 🔹 PAYMENT (Stripe checkout)
   const setShowPayment = (userData) => {
@@ -65,12 +68,15 @@ const Profile = () => {
 
     try {
       // Firebase update
-      await updateUserProfile(name);
+        let photoURL = currentUser?.photoURL || null;
+        if (photoFile) photoURL = await uploadImageToImgbb(photoFile);
+      await updateUserProfile(name,photoURL);
 
       // DB update
       await axiosSecure.patch(`/users/${currentUser._id}`, {
         displayName: name,
         phone,
+        photoURL
       });
 
       toast.success("Profile updated successfully");
@@ -190,6 +196,23 @@ const Profile = () => {
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
               </div>
             </div>
+
+             {/* ================= IMAGE UPLOAD ================= */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Profile Photo
+              </label>
+              <div className="mt-1 flex items-center gap-3">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handlePhotoChange}
+                  className="block w-full border border-gray-300 rounded-md p-2"
+                />
+                {photoFile && <span className="text-gray-500">{photoFile.name}</span>}
+              </div>
+            </div>
+            
 
             {/* Phone */}
             <div>
