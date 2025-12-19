@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import LoadingSpinner from "../../../Component/LoadingSpinner/LoadingSpinner";
 import { FiEye, FiUserPlus, FiX } from "react-icons/fi";
+import Swal from "sweetalert2";
 
 const AdminAllIssues = () => {
   const axiosSecure = useAxiosSecure();
@@ -11,6 +12,7 @@ const AdminAllIssues = () => {
     data: issues = [],
     isLoading,
     isError,
+    refetch,
   } = useQuery({
     queryKey: ["admin-all-issues"],
     queryFn: async () => {
@@ -26,6 +28,31 @@ const AdminAllIssues = () => {
         Failed to load issues
       </div>
     );
+
+  const handleRejectIssue = (issue) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "This issue will be rejected!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Reject",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axiosSecure.patch(`/issues/reject/${issue._id}`);
+          Swal.fire("Rejected!", "Issue has been rejected.", "success");
+          refetch();
+        } catch (err) {
+          console.error(err);
+          Swal.fire(
+            "Error!",
+            err.response?.data?.message || "Failed to reject issue",
+            "error"
+          );
+        }
+      }
+    });
+  };
 
   // Boosted issues on top
   const sortedIssues = [...issues].sort(
@@ -119,32 +146,26 @@ const AdminAllIssues = () => {
                     <div className="flex justify-center gap-3">
                       {/* View */}
                       <button
-                        className="p-2 rounded-full text-gray-600 
-                 hover:bg-primary hover:text-white 
-                 transition duration-200"
+                        className="p-2 rounded-full text-gray-600 hover:bg-primary hover:text-white transition duration-200"
                         title="View Details"
                       >
                         <FiEye size={18} />
                       </button>
 
                       {/* Assign Staff */}
-                      {!issue.assignedStaff && (
+                      {!issue.assignedStaff && issue.status === "pending" && (
                         <button
-                          className="p-2 rounded-full text-blue-600 
-                   hover:bg-blue-100 hover:text-blue-700 
-                   transition duration-200"
+                          className="p-2 rounded-full text-blue-600 hover:bg-blue-100 hover:text-blue-700 transition duration-200"
                           title="Assign Staff"
                         >
                           <FiUserPlus size={18} />
                         </button>
                       )}
-
                       {/* Reject */}
                       {issue.status === "pending" && (
                         <button
-                          className="p-2 rounded-full text-red-500 
-                   hover:bg-red-100 hover:text-red-600 
-                   transition duration-200"
+                          onClick={() => handleRejectIssue(issue)}
+                          className="p-2 rounded-full text-red-500 hover:bg-red-100 hover:text-red-600 transition duration-200"
                           title="Reject Issue"
                         >
                           <FiX size={18} />
