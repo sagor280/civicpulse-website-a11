@@ -5,11 +5,17 @@ import { LuFileText } from "react-icons/lu";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
 import { BsLayoutSidebar } from "react-icons/bs";
-import { MdAssignmentAdd, MdManageAccounts, MdOutlineAssignmentLate, MdOutlinePayment, MdReport } from 'react-icons/md';
+import {
+  MdAssignmentAdd,
+  MdManageAccounts,
+  MdOutlineAssignmentLate,
+  MdOutlinePayment,
+  MdReport,
+} from "react-icons/md";
 import useRole from "../hooks/useRoll";
 
 const DashboardLayout = () => {
-  const {role} = useRole()
+  const { role } = useRole();
   return (
     <div className="drawer lg:drawer-open max-w-7xl mx-auto">
       <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
@@ -18,7 +24,10 @@ const DashboardLayout = () => {
       <div className="drawer-content">
         <header className="h-14 border-b border-gray-200 flex items-center px-4 ">
           {/* Sidebar Toggle */}
-          <label htmlFor="my-drawer-4" className="p-2 rounded-lg hover:bg-gray-100 transition-all">
+          <label
+            htmlFor="my-drawer-4"
+            className="p-2 rounded-lg hover:bg-gray-100 transition-all"
+          >
             <BsLayoutSidebar className="w-6 h-6 text-primary" />
           </label>
 
@@ -45,7 +54,6 @@ const DashboardLayout = () => {
 
         <div className="flex min-h-full flex-col items-start bg-primary is-drawer-close:w-14 is-drawer-open:w-64">
           <ul className="menu text-white font-medium w-full grow pt-3 space-y-2">
-
             {/* Logo */}
             <Link to="/" className="flex justify-center mb-3">
               <img
@@ -55,108 +63,186 @@ const DashboardLayout = () => {
               />
             </Link>
 
-           {/* user dashbard links */}
+            {/* user dashbard links */}
 
-            {
-              role==='citizen'&& <>
-              <li>
-              <NavLink
-                to="/dashboard"
-                end
-                className="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-300 hover:bg-white/20 text-base is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                data-tip="Overview"
-              >
-                <LayoutDashboard className="text-xl" />
-                <span className="is-drawer-close:hidden text-[15px]">Overview</span>
-              </NavLink>
-            </li>
+            {role === "citizen" && (
+              <>
+                <li>
+                  <NavLink
+                    to="/dashboard"
+                    end
+                    className="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-300 hover:bg-white/20 text-base is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                    data-tip="Overview"
+                  >
+                    <LayoutDashboard className="text-xl" />
+                    <span className="is-drawer-close:hidden text-[15px]">
+                      Overview
+                    </span>
+                  </NavLink>
+                </li>
 
-            {/* My Issues */}
-            <li>
-              <NavLink
-                to="/dashboard/my-issues"
-                className="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-300 hover:bg-white/20 text-base is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                data-tip="My Issues"
-              >
-                <LuFileText className="text-xl" />
-                <span className="is-drawer-close:hidden text-[15px]">My Issues</span>
-              </NavLink>
-            </li>
+                {/* My Issues */}
+                <li>
+                  <NavLink
+                    to="/dashboard/my-issues"
+                    className="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-300 hover:bg-white/20 text-base is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                    data-tip="My Issues"
+                  >
+                    <LuFileText className="text-xl" />
+                    <span className="is-drawer-close:hidden text-[15px]">
+                      My Issues
+                    </span>
+                  </NavLink>
+                </li>
 
-            {/* Report Issues */}
-            <li>
-              <NavLink
-                to="/dashboard/report-issues"
-                className="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-300 hover:bg-white/20 text-base is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                data-tip="Report Issues"
-              >
-                <IoMdAddCircleOutline className="text-xl" />
-                <span className="is-drawer-close:hidden text-[15px]">Report Issues</span>
-              </NavLink>
-            </li>
+                {/* Report Issues */}
+                <li>
+                  <NavLink
+                    to="/dashboard/report-issues"
+                    className="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-300 hover:bg-white/20 text-base is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                    data-tip="Report Issues"
+                  >
+                    <IoMdAddCircleOutline className="text-xl" />
+                    <span className="is-drawer-close:hidden text-[15px]">
+                      Report Issues
+                    </span>
+                  </NavLink>
+                </li>
 
-            {/* My Profile */}
-            <li>
-              <NavLink
-                to="/dashboard/profile"
-                className="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-300 hover:bg-white/20 text-base is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                data-tip="My Profile"
-              >
-                <CgProfile className="text-xl" />
-                <span className="is-drawer-close:hidden text-[15px]">My Profile</span>
-              </NavLink>
-            </li>
-              
+                {/* My Profile */}
+                <li>
+                  <NavLink
+                    to="/dashboard/profile"
+                    className="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-300 hover:bg-white/20 text-base is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                    data-tip="My Profile"
+                  >
+                    <CgProfile className="text-xl" />
+                    <span className="is-drawer-close:hidden text-[15px]">
+                      My Profile
+                    </span>
+                  </NavLink>
+                </li>
               </>
-            }
+            )}
             {/* Staff Dashboard */}
-            {
-              role==='staff'&& <>
-              <li>
-              <NavLink
-                to="/dashboard"
-                end
-                className="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-300 hover:bg-white/20 text-base is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                data-tip="Overview"
-              >
-                <LayoutDashboard className="text-xl" />
-                <span className="is-drawer-close:hidden text-[15px]">Overview</span>
-              </NavLink>
-            </li>
+            {role === "staff" && (
+              <>
+                <li>
+                  <NavLink
+                    to="/dashboard"
+                    end
+                    className="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-300 hover:bg-white/20 text-base is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                    data-tip="Overview"
+                  >
+                    <LayoutDashboard className="text-xl" />
+                    <span className="is-drawer-close:hidden text-[15px]">
+                      Overview
+                    </span>
+                  </NavLink>
+                </li>
 
-            {/* Assigned issue */}
+                {/* Assigned issue */}
 
-            <li>
-              <NavLink
-                to="/dashboard/assigned-issue"
-                end
-                className="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-300 hover:bg-white/20 text-base is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                data-tip="Assigned issue"
-              >
-                <MdAssignmentAdd className="text-xl" />
-                <span className="is-drawer-close:hidden text-[15px]">Assigned issue</span>
-              </NavLink>
-            </li>
-            
-            {/* My Profile */}
-            <li>
-              <NavLink
-                to="/dashboard/profile"
-                className="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-300 hover:bg-white/20 text-base is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                data-tip="My Profile"
-              >
-                <CgProfile className="text-xl" />
-                <span className="is-drawer-close:hidden text-[15px]">My Profile</span>
-              </NavLink>
-            </li>
+                <li>
+                  <NavLink
+                    to="/dashboard/assigned-issue"
+                    end
+                    className="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-300 hover:bg-white/20 text-base is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                    data-tip="Assigned issue"
+                  >
+                    <MdAssignmentAdd className="text-xl" />
+                    <span className="is-drawer-close:hidden text-[15px]">
+                      Assigned issue
+                    </span>
+                  </NavLink>
+                </li>
 
-
-
-              
+                {/* My Profile */}
+                <li>
+                  <NavLink
+                    to="/dashboard/profile"
+                    className="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-300 hover:bg-white/20 text-base is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                    data-tip="My Profile"
+                  >
+                    <CgProfile className="text-xl" />
+                    <span className="is-drawer-close:hidden text-[15px]">
+                      My Profile
+                    </span>
+                  </NavLink>
+                </li>
               </>
-            }
-            
+            )}
 
+              {role === "admin" && (
+              <>
+                {/* Dashboard Overview */}
+                <li>
+                  <NavLink
+                    to="/dashboard/overview"
+                    end
+                    className="flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-white/20 transition-all"
+                  >
+                    <LayoutDashboard className="text-xl" />
+                    <span className="is-drawer-close:hidden">Overview</span>
+                  </NavLink>
+                </li>
+
+                {/* All Issues */}
+                <li>
+                  <NavLink
+                    to="/dashboard/all-issues"
+                    className="flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-white/20 transition-all"
+                  >
+                    <MdOutlineAssignmentLate className="text-xl" />
+                    <span className="is-drawer-close:hidden">All Issues</span>
+                  </NavLink>
+                </li>
+
+                {/* Manage Users */}
+                <li>
+                  <NavLink
+                    to="/dashboard/manage-users"
+                    className="flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-white/20 transition-all"
+                  >
+                    <MdManageAccounts className="text-xl" />
+                    <span className="is-drawer-close:hidden">Manage Users</span>
+                  </NavLink>
+                </li>
+
+                {/* Manage Staff */}
+                <li>
+                  <NavLink
+                    to="/dashboard/manage-staff"
+                    className="flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-white/20 transition-all"
+                  >
+                    <MdAssignmentAdd className="text-xl" />
+                    <span className="is-drawer-close:hidden">Manage Staff</span>
+                  </NavLink>
+                </li>
+
+                {/* Payments */}
+                <li>
+                  <NavLink
+                    to="/dashboard/payments"
+                    className="flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-white/20 transition-all"
+                  >
+                    <MdOutlinePayment className="text-xl" />
+                    <span className="is-drawer-close:hidden">Payments</span>
+                  </NavLink>
+                </li>
+
+                {/* Admin Profile */}
+                <li>
+                  <NavLink
+                    to="/dashboard/admin-profile"
+                    className="flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-white/20 transition-all"
+                  >
+                    <CgProfile className="text-xl" />
+                    <span className="is-drawer-close:hidden">Profile</span>
+                  </NavLink>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </div>
