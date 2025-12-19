@@ -5,18 +5,23 @@ import { uploadImageToImgbb } from "../../../utils/uploadImage";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate } from "react-router";
+import { useLoaderData, useNavigate } from "react-router";
 import toast from "react-hot-toast";
 import LoadingSpinner from "../../../Component/LoadingSpinner/LoadingSpinner";
-
 
 const ReportIssues = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const categoryData = useLoaderData();
 
-  const { register, handleSubmit, formState: { errors }, reset } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm();
 
   // Fetch user info
   const { data: Creator = {}, isLoading: userLoading } = useQuery({
@@ -44,7 +49,9 @@ const ReportIssues = () => {
   if (!Creator?.isPremium && IssueCount >= 3) {
     return (
       <div className="max-w-xl mx-auto text-center border border-[#ece7e7] bg-white p-6 rounded-xl mt-20 shadow">
-        <h2 className="text-xl md:text-2xl font-bold mb-4">Issue Limit Reached</h2>
+        <h2 className="text-xl md:text-2xl font-bold mb-4">
+          Issue Limit Reached
+        </h2>
         <p className="text-sm md:text-base text-gray-600 mb-6">
           Free users can report only <strong>3 issues</strong>.
         </p>
@@ -121,14 +128,19 @@ const ReportIssues = () => {
             {...register("category", { required: "Category is required" })}
           >
             <option value="">Select a category</option>
-            <option value="Road">Road</option>
-            <option value="Electricity">Electricity</option>
-            <option value="Water">Water</option>
-            <option value="Garbage">Garbage</option>
-            <option value="Other">Other</option>
+
+            {categoryData?.map((cat) =>
+              cat.items.map((item, i) => (
+                <option key={`${cat.id}-${i}`} value={item}>
+                  {item}
+                </option>
+              ))
+            )}
           </select>
           {errors.category && (
-            <p className="text-sm text-red-500 mt-1">{errors.category.message}</p>
+            <p className="text-sm text-red-500 mt-1">
+              {errors.category.message}
+            </p>
           )}
         </div>
 
@@ -147,7 +159,9 @@ const ReportIssues = () => {
             />
           </div>
           {errors.location && (
-            <p className="text-sm text-red-500 mt-1">{errors.location.message}</p>
+            <p className="text-sm text-red-500 mt-1">
+              {errors.location.message}
+            </p>
           )}
         </div>
 
@@ -169,7 +183,9 @@ const ReportIssues = () => {
             })}
           />
           {errors.description && (
-            <p className="text-sm text-red-500 mt-1">{errors.description.message}</p>
+            <p className="text-sm text-red-500 mt-1">
+              {errors.description.message}
+            </p>
           )}
         </div>
 
