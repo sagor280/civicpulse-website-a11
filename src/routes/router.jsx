@@ -11,6 +11,8 @@ import Profile from "../pages/Common/Profile";
 import AssignedIssues from "../pages/Dashboard/Staff/AssignedIssues";
 import PaymentSuccess from "../pages/Dashboard/Payment/PaymentSuccess";
 import PaymentCancelled from "../pages/Dashboard/Payment/PaymentCancelled";
+import PaymentSuccessBoosting from "../pages/Dashboard/Payment/PaymentSuccessBoosting";
+import LoadingSpinner from "../Component/LoadingSpinner/LoadingSpinner";
 
 
 
@@ -37,7 +39,9 @@ export const router = createBrowserRouter([
     children:[
       {
         path:'my-issues',
-        Component:MyIssues
+        Component:MyIssues,
+        loader:()=> fetch('/catagory.json').then(res => res.json()),
+  hydrateFallbackElement: <LoadingSpinner />
 
       },
       {
@@ -51,6 +55,11 @@ export const router = createBrowserRouter([
       {
         path:'payment-success',
         element:<PaymentSuccess></PaymentSuccess>
+
+      },
+      {
+        path:'payment-success-boosting',
+        element:<PaymentSuccessBoosting></PaymentSuccessBoosting>
 
       },
       {

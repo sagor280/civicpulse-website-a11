@@ -1,0 +1,27 @@
+[
+  {
+    "id": "cat-1",
+    "name": "Environment",
+    "items": ["Pollution", "Deforestation", "Water Scarcity", "Climate Change"]
+  },
+  {
+    "id": "cat-2",
+    "name": "Infrastructure",
+    "items": ["Roads", "Bridges", "Public Transport", "Street Lighting"]
+  },
+  {
+    "id": "cat-3",
+    "name": "Healthcare",
+    "items": ["Hospitals", "Medical Supplies", "Vaccination", "Mental Health"]
+  },
+  {
+    "id": "cat-4",
+    "name": "Education",
+    "items": ["Schools", "Colleges", "Online Education", "Libraries"]
+  },
+  {
+    "id": "cat-5",
+    "name": "Public Safety",
+    "items": ["Police", "Fire Services", "Traffic Control", "Emergency Response"]
+  }
+]
