@@ -16,9 +16,10 @@ import LoadingSpinner from "../Component/LoadingSpinner/LoadingSpinner";
 import AdminOverview from "../pages/Dashboard/Admin/AdminOverview";
 import AdminAllIssues from "../pages/Dashboard/Admin/AdminAllIssues";
 import ManageUsers from "../pages/Dashboard/Admin/ManageUsers";
-import ManageSraff from "../pages/Dashboard/Admin/ManageSraff";
+
 import Payment from "../pages/Dashboard/Admin/Payment";
 import AdminProfile from "../pages/Common/AdminProfile";
+import ManageStaff from "../pages/Dashboard/Admin/ManageStaff";
 
 export const router = createBrowserRouter([
   {
@@ -91,7 +92,7 @@ export const router = createBrowserRouter([
       },
       {
         path:"/dashboard/manage-staff",
-        element:<ManageSraff></ManageSraff>
+        element:<ManageStaff></ManageStaff>
       },
       {
         path:"/dashboard/payments",

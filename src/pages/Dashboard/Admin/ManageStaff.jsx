@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ManageSraff = () => {
+const ManageStaff = () => {
     return (
         <div>
             <h1>manage staff</h1>
@@ -8,4 +8,4 @@ const ManageSraff = () => {
     );
 };
 
-export default ManageSraff;
+export default ManageStaff;
