@@ -8,12 +8,15 @@ import Swal from "sweetalert2";
 const AdminAllIssues = () => {
   const axiosSecure = useAxiosSecure();
 
+
   const [showModal, setShowModal] = useState(false);
   const [selectedIssue, setSelectedIssue] = useState(null);
   const [staffList, setStaffList] = useState([]);
   const [selectedStaff, setSelectedStaff] = useState("");
 
-  // 🔹 Fetch all issues
+  /* ==============================
+        Fetch all issues
+     ============================== */
   const {
     data: issues = [],
     isLoading,
@@ -27,7 +30,9 @@ const AdminAllIssues = () => {
     },
   });
 
-  // 🔹 Open Assign Staff Modal
+  /* ==============================
+        Open Assign Staff Modal
+     ============================== */
   const openAssignModal = async (issue) => {
     setSelectedIssue(issue);
     setSelectedStaff("");
@@ -36,12 +41,45 @@ const AdminAllIssues = () => {
     try {
       const res = await axiosSecure.get("/users/staff");
       setStaffList(res.data);
-    } catch (err) {
+    } catch (error) {
       Swal.fire("Error", "Failed to load staff list", "error");
     }
   };
 
-  // 🔹 Reject Issue
+  /* ==============================
+        Assign Staff Handler
+     ============================== */
+  const handleAssignStaff = async () => {
+    if (!selectedStaff || !selectedIssue) return;
+
+    const staff = staffList.find(
+      (s) => s.email === selectedStaff
+    );
+
+    try {
+      await axiosSecure.patch(
+        `/issues/assign/${selectedIssue._id}`,
+        {
+          staffEmail: staff.email,
+          staffName: staff.displayName,
+        }
+      );
+
+      Swal.fire("Assigned!", "Staff assigned successfully", "success");
+      setShowModal(false);
+      refetch();
+    } catch (error) {
+      Swal.fire(
+        "Error",
+        error.response?.data?.message || "Failed to assign staff",
+        "error"
+      );
+    }
+  };
+
+  /* ==============================
+        Reject Issue
+     ============================== */
   const handleRejectIssue = (issue) => {
     Swal.fire({
       title: "Are you sure?",
@@ -51,9 +89,13 @@ const AdminAllIssues = () => {
       confirmButtonText: "Yes, Reject",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await axiosSecure.patch(`/issues/reject/${issue._id}`);
-        Swal.fire("Rejected!", "Issue has been rejected.", "success");
-        refetch();
+        try {
+          await axiosSecure.patch(`/issues/reject/${issue._id}`);
+          Swal.fire("Rejected!", "Issue has been rejected.", "success");
+          refetch();
+        } catch (error) {
+          Swal.fire("Error", "Failed to reject issue", "error");
+        }
       }
     });
   };
@@ -66,7 +108,7 @@ const AdminAllIssues = () => {
       </div>
     );
 
-  // 🔹 Boosted issues first
+  // boosted issues first
   const sortedIssues = [...issues].sort(
     (a, b) => (b.isBoosted === true) - (a.isBoosted === true)
   );
@@ -106,7 +148,7 @@ const AdminAllIssues = () => {
               sortedIssues.map((issue) => (
                 <tr
                   key={issue._id}
-                  className={`hover:bg-gray-50 transition ${
+                  className={`hover:bg-gray-50 ${
                     issue.isBoosted ? "bg-orange-50" : ""
                   }`}
                 >
@@ -118,7 +160,15 @@ const AdminAllIssues = () => {
                   <td className="px-6 py-4">{issue.category}</td>
 
                   <td className="px-6 py-4">
-                    <span className="px-3 py-1 text-xs rounded-full bg-orange-100 text-orange-700 capitalize">
+                    <span
+                      className={`px-3 py-1 text-xs rounded-full capitalize ${
+                        issue.status === "pending"
+                          ? "bg-orange-100 text-orange-700"
+                          : issue.status === "rejected"
+                          ? "bg-red-100 text-red-700"
+                          : "bg-blue-100 text-blue-700"
+                      }`}
+                    >
                       {issue.status}
                     </span>
                   </td>
@@ -145,7 +195,6 @@ const AdminAllIssues = () => {
                     )}
                   </td>
 
-                  {/* Actions */}
                   <td className="px-6 py-4">
                     <div className="flex justify-center gap-3">
                       <button className="p-2 rounded-full hover:bg-gray-200">
@@ -179,58 +228,47 @@ const AdminAllIssues = () => {
         </table>
       </div>
 
-     {showModal && (
-  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
-    <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-xl">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-xl font-semibold text-gray-900">
-          Assign Staff
-        </h3>
-        <button
-          onClick={() => setShowModal(false)}
-          className="text-gray-500 hover:text-gray-700"
-        >
-          ✕
-        </button>
-      </div>
-      <p className="text-sm text-gray-600 mb-6">
-        Select a staff member for this issue
-      </p>
+      {/* Assign Staff Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
+          <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-xl">
+            <h3 className="text-xl font-semibold mb-4">Assign Staff</h3>
 
-      <select
-        className="w-full border border-gray-300 rounded-xl px-4 py-3 bg-white text-gray-900 focus:outline-none focus:border-blue-500 transition-colors"
-        value={selectedStaff}
-        onChange={(e) => setSelectedStaff(e.target.value)}
-      >
-        <option value="">Select Staff</option>
-        {staffList.map((staff) => (
-          <option key={staff._id} value={staff.email}>
-            {staff.displayName}
-          </option>
-        ))}
-      </select>
+            <select
+              className="w-full border rounded-xl px-4 py-3"
+              value={selectedStaff}
+              onChange={(e) => setSelectedStaff(e.target.value)}
+            >
+              <option value="">Select Staff</option>
+              {staffList.map((staff) => (
+                <option key={staff._id} value={staff.email}>
+                  {staff.displayName}
+                </option>
+              ))}
+            </select>
 
-      <div className="flex justify-end gap-3 mt-6">
-        <button
-          onClick={() => setShowModal(false)}
-          className="px-6 py-2 rounded-full bg-gray-200 text-gray-800 hover:bg-gray-300 transition-colors"
-        >
-          Cancel
-        </button>
-        <button
-          disabled={!selectedStaff}
-          className={`px-6 py-2 rounded-full text-white font-medium ${
-            selectedStaff
-              ? "bg-primary hover:bg-[#138e7a]"
-              : "bg-gray-300 cursor-not-allowed"
-          } transition-colors`}
-        >
-          Confirm
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-6 py-2 rounded-full bg-gray-200"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAssignStaff}
+                disabled={!selectedStaff}
+                className={`px-6 py-2 rounded-full text-white ${
+                  selectedStaff
+                    ? "bg-primary hover:bg-[#138e7a]"
+                    : "bg-gray-300 cursor-not-allowed"
+                }`}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
