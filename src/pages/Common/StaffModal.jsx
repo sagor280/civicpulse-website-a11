@@ -1,16 +1,18 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import { uploadImageToImgbb } from "../../utils/uploadImage";
 
 
 const StaffModal = ({ closeModal, refetch, editStaff }) => {
   const axiosSecure = useAxiosSecure();
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     name: editStaff?.displayName || "",
     email: editStaff?.email || "",
     phone: editStaff?.phone || "",
-    photoURL: editStaff?.photoURL || "",
+    photo: null,
     password: "",
   });
 
@@ -18,29 +20,38 @@ const StaffModal = ({ closeModal, refetch, editStaff }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  /* =========================
-        Submit Handler
-     ========================= */
+  const handleImageChange = (e) => {
+    setFormData({ ...formData, photo: e.target.files[0] });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
+      let photoURL = editStaff?.photoURL || "";
+
+      // 🔹 Upload image if selected
+      if (formData.photo) {
+        photoURL = await uploadImageToImgbb(formData.photo);
+      }
+
       if (editStaff) {
         // UPDATE
-        await axiosSecure.patch(`/admin/staff/${editStaff._id}`, {
+        await axiosSecure.patch(`/staff/${editStaff._id}`, {
           displayName: formData.name,
           phone: formData.phone,
-          photoURL: formData.photoURL,
+          photoURL,
         });
 
         Swal.fire("Updated!", "Staff updated successfully", "success");
       } else {
         // CREATE
-        await axiosSecure.post("/admin/staff", {
+        await axiosSecure.post("/staff", {
           displayName: formData.name,
           email: formData.email,
           phone: formData.phone,
-          photoURL: formData.photoURL,
+          photoURL,
           password: formData.password,
         });
 
@@ -55,6 +66,8 @@ const StaffModal = ({ closeModal, refetch, editStaff }) => {
         error.response?.data?.message || "Something went wrong",
         "error"
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -71,7 +84,7 @@ const StaffModal = ({ closeModal, refetch, editStaff }) => {
             value={formData.name}
             onChange={handleChange}
             placeholder="Full Name"
-            className="w-full border rounded-xl px-4 py-3"
+            className="w-full border border-gray-300 rounded-xl px-4 py-3"
             required
           />
 
@@ -81,8 +94,8 @@ const StaffModal = ({ closeModal, refetch, editStaff }) => {
             onChange={handleChange}
             placeholder="Email"
             type="email"
-            className="w-full border rounded-xl px-4 py-3"
             disabled={editStaff}
+            className="w-full border border-gray-300 rounded-xl px-4 py-3"
             required
           />
 
@@ -91,15 +104,15 @@ const StaffModal = ({ closeModal, refetch, editStaff }) => {
             value={formData.phone}
             onChange={handleChange}
             placeholder="Phone"
-            className="w-full border rounded-xl px-4 py-3"
+            className="w-full border border-gray-300 rounded-xl px-4 py-3"
           />
 
+          {/* Image Upload */}
           <input
-            name="photoURL"
-            value={formData.photoURL}
-            onChange={handleChange}
-            placeholder="Photo URL"
-            className="w-full border rounded-xl px-4 py-3"
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="w-full border border-gray-300 rounded-xl px-4 py-3"
           />
 
           {!editStaff && (
@@ -109,7 +122,7 @@ const StaffModal = ({ closeModal, refetch, editStaff }) => {
               onChange={handleChange}
               placeholder="Password"
               type="password"
-              className="w-full border rounded-xl px-4 py-3"
+              className="w-full border border-gray-300 rounded-xl px-4 py-3"
               required
             />
           )}
@@ -124,9 +137,10 @@ const StaffModal = ({ closeModal, refetch, editStaff }) => {
             </button>
             <button
               type="submit"
+              disabled={loading}
               className="px-6 py-2 rounded-full bg-primary text-white hover:bg-[#138e7a]"
             >
-              {editStaff ? "Update" : "Create"}
+              {loading ? "Processing..." : editStaff ? "Update" : "Create"}
             </button>
           </div>
         </form>
