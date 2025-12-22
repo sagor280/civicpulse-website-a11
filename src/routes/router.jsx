@@ -5,37 +5,41 @@ import Register from "../pages/Auth/Register";
 import Login from "../pages/Auth/Login";
 import DashboardLayout from "../layouts/DashboardLayout";
 import PrivateRoute from "./PrivateRoute";
+import UserRoute from "./UserRoute";
+import StaffRoute from "./StaffRoute";
+import AdminRoute from "./AdminRoute";
+
 import MyIssues from "../pages/Dashboard/Citizen/MyIssues";
 import ReportIssues from "../pages/Dashboard/Citizen/ReportIssues";
 import Profile from "../pages/Common/Profile";
 import AssignedIssues from "../pages/Dashboard/Staff/AssignedIssues";
-import PaymentSuccess from "../pages/Dashboard/Payment/PaymentSuccess";
-import PaymentCancelled from "../pages/Dashboard/Payment/PaymentCancelled";
-import PaymentSuccessBoosting from "../pages/Dashboard/Payment/PaymentSuccessBoosting";
-import LoadingSpinner from "../Component/LoadingSpinner/LoadingSpinner";
+import StaffProfile from "../pages/Common/StaffProfile";
 import AdminOverview from "../pages/Dashboard/Admin/AdminOverview";
 import AdminAllIssues from "../pages/Dashboard/Admin/AdminAllIssues";
 import ManageUsers from "../pages/Dashboard/Admin/ManageUsers";
-
+import ManageStaff from "../pages/Dashboard/Admin/ManageStaff";
 import Payment from "../pages/Dashboard/Admin/Payment";
 import AdminProfile from "../pages/Common/AdminProfile";
-import ManageStaff from "../pages/Dashboard/Admin/ManageStaff";
-import StaffProfile from "../pages/Common/StaffProfile";
+
+import PaymentSuccess from "../pages/Dashboard/Payment/PaymentSuccess";
+import PaymentSuccessBoosting from "../pages/Dashboard/Payment/PaymentSuccessBoosting";
+import PaymentCancelled from "../pages/Dashboard/Payment/PaymentCancelled";
+import LoadingSpinner from "../Component/LoadingSpinner/LoadingSpinner";
+import Errorpage from "../pages/Errorpage/Errorpage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
-
+    errorElement: <Errorpage />,
     children: [
-      {
-        path: "/",
-        element: <Home />,
-      },
+      { path: "/", element: <Home /> },
     ],
   },
   { path: "/login", element: <Login /> },
   { path: "/register", element: <Register /> },
+
+  // Dashboard routes
   {
     path: "/dashboard",
     element: (
@@ -43,73 +47,108 @@ export const router = createBrowserRouter([
         <DashboardLayout />
       </PrivateRoute>
     ),
-
     children: [
+      // Citizen routes
       {
         path: "my-issues",
-        Component: MyIssues,
+        element: (
+          <UserRoute>
+            <MyIssues />
+          </UserRoute>
+        ),
         loader: () => fetch("/catagory.json").then((res) => res.json()),
         hydrateFallbackElement: <LoadingSpinner />,
       },
       {
         path: "report-issues",
-        Component: ReportIssues,
+        element: (
+          <UserRoute>
+            <ReportIssues />
+          </UserRoute>
+        ),
         loader: () => fetch("/catagory.json").then((res) => res.json()),
         hydrateFallbackElement: <LoadingSpinner />,
       },
       {
         path: "profile",
-        Component: Profile,
+        element: (
+          <UserRoute>
+            <Profile />
+          </UserRoute>
+        ),
       },
-      {
-        path: "payment-success",
-        element: <PaymentSuccess></PaymentSuccess>,
-      },
-      {
-        path: "payment-success-boosting",
-        element: <PaymentSuccessBoosting></PaymentSuccessBoosting>,
-      },
-      {
-        path: "payment-cancelled",
-        element: <PaymentCancelled></PaymentCancelled>,
-      },
-      
-       //staff only routes
-      {
-        path: "/dashboard/assigned-issue",
-        element: <AssignedIssues></AssignedIssues>,
-      },
-      {
-        path:"/dashboard/staff-profile",
-        element:<StaffProfile></StaffProfile>
-      },
-      // admin only routes
-      {
-        path:"/dashboard/overview",
-        element:<AdminOverview></AdminOverview>
-      },
-      {
-        path:"/dashboard/all-issues",
-        element:<AdminAllIssues></AdminAllIssues>
-      },
-      {
-        path:"/dashboard/manage-users",
-        element:<ManageUsers></ManageUsers>
-      },
-      {
-        path:"/dashboard/manage-staff",
-        element:<ManageStaff></ManageStaff>
-      },
-      {
-        path:"/dashboard/payments",
-        element:<Payment></Payment>
-      },
-      {
-        path:"/dashboard/admin-profile",
-        element:<AdminProfile></AdminProfile>
-      },
-      
+      // Payment routes (accessible by all logged-in users)
+      { path: "payment-success", element: <PaymentSuccess /> },
+      { path: "payment-success-boosting", element: <PaymentSuccessBoosting /> },
+      { path: "payment-cancelled", element: <PaymentCancelled /> },
 
+      // Staff routes
+      {
+        path: "assigned-issue",
+        element: (
+          <StaffRoute>
+            <AssignedIssues />
+          </StaffRoute>
+        ),
+      },
+      {
+        path: "staff-profile",
+        element: (
+          <StaffRoute>
+            <StaffProfile />
+          </StaffRoute>
+        ),
+      },
+
+      // Admin routes
+      {
+        path: "overview",
+        element: (
+          <AdminRoute>
+            <AdminOverview />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "all-issues",
+        element: (
+          <AdminRoute>
+            <AdminAllIssues />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "manage-users",
+        element: (
+          <AdminRoute>
+            <ManageUsers />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "manage-staff",
+        element: (
+          <AdminRoute>
+            <ManageStaff />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "payments",
+        element: (
+          <AdminRoute>
+            <Payment />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "admin-profile",
+        element: (
+          <AdminRoute>
+            <AdminProfile />
+          </AdminRoute>
+        ),
+      },
     ],
   },
 ]);
