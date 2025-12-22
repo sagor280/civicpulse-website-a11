@@ -26,6 +26,7 @@ import PaymentSuccessBoosting from "../pages/Dashboard/Payment/PaymentSuccessBoo
 import PaymentCancelled from "../pages/Dashboard/Payment/PaymentCancelled";
 import LoadingSpinner from "../Component/LoadingSpinner/LoadingSpinner";
 import Errorpage from "../pages/Errorpage/Errorpage";
+import AllIssues from "../pages/AllIssues/AllIssues";
 
 export const router = createBrowserRouter([
   {
@@ -34,6 +35,12 @@ export const router = createBrowserRouter([
     errorElement: <Errorpage />,
     children: [
       { path: "/", element: <Home /> },
+      {
+        path:'issues',
+        element:<AllIssues></AllIssues>,
+        loader: () => fetch("/catagory.json").then((res) => res.json()),
+        hydrateFallbackElement: <LoadingSpinner />,
+      }
     ],
   },
   { path: "/login", element: <Login /> },

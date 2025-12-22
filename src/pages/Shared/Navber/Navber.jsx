@@ -22,7 +22,7 @@ const Navber = () => {
   const links = (
     <>
       <li><NavLink to="/" className="nav-link">Home</NavLink></li>
-      <li><NavLink to="/all-issues" className="nav-link">All Issues</NavLink></li>
+      <li><NavLink to="/issues" className="nav-link">All Issues</NavLink></li>
       <li><NavLink to="/how-it-works" className="nav-link">How It Works</NavLink></li>
       <li><NavLink to="/about" className="nav-link">About Us</NavLink></li>
     </>
