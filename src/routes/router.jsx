@@ -27,6 +27,7 @@ import PaymentCancelled from "../pages/Dashboard/Payment/PaymentCancelled";
 import LoadingSpinner from "../Component/LoadingSpinner/LoadingSpinner";
 import Errorpage from "../pages/Errorpage/Errorpage";
 import AllIssues from "../pages/AllIssues/AllIssues";
+import IssueDetails from "../pages/AllIssues/IssueDetails";
 
 export const router = createBrowserRouter([
   {
@@ -38,6 +39,12 @@ export const router = createBrowserRouter([
       {
         path:'issues',
         element:<AllIssues></AllIssues>,
+        loader: () => fetch("/catagory.json").then((res) => res.json()),
+        hydrateFallbackElement: <LoadingSpinner />,
+      },
+      {
+        path:'issue-details/:id',
+        element:<IssueDetails></IssueDetails>,
         loader: () => fetch("/catagory.json").then((res) => res.json()),
         hydrateFallbackElement: <LoadingSpinner />,
       }

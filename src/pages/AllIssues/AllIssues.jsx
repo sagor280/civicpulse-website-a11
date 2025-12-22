@@ -60,28 +60,37 @@ const AllIssues = () => {
 
     const priorityOrder = { high: 1, normal: 2 };
 
-    const handleUpvotes = async (issue) => {
-        if (!user?.email) {
-            navigate("/login");
-            return;
-        }
+   const handleUpvotes = async (id, createrEmail) => {
+    if (!user?.email) {
+        navigate("/login");
+        return;
+    }
 
-        try {
-            const res = await axiosSecure.patch(`/issues/upvote/${issue._id}`, {
-                email: user.email,
-                createrEmail: issue.email
+    try {
+        const res = await axiosSecure.patch(`/issues/upvote/${id}`, {
+            email: user.email,
+            createrEmail: createrEmail
+        });
+
+        if (res.data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: res.data.message
             });
-
-            if (res.data.success) {
-                Swal.fire({ icon: "success", title: res.data.message });
-                refetch();
-            } else {
-                Swal.fire({ icon: "warning", title: "Already upvoted" });
-            }
-        } catch (err) {
-            Swal.fire({ icon: "error", title: err.response?.data?.message || "Upvote failed" });
+            refetch();
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Already upvoted'
+            });
         }
-    };
+    } catch (err) {
+        Swal.fire({
+            icon: 'error',
+            title: err.response?.data?.message || "Upvote failed"
+        });
+    }
+};
 
     if (isLoading) return <LoadingSpinner />;
 
@@ -150,7 +159,7 @@ const AllIssues = () => {
                             <AllIssuesCard
                                 key={issue._id}
                                 issue={issue}
-                                onUpvote={handleUpvotes}
+                                 onUpvote={() => handleUpvotes(issue._id, issue.email)}
                             />
                         ))}
                 </div>

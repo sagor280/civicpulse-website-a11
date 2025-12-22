@@ -89,7 +89,7 @@ const AllIssuesCard = ({ issue, onUpvote }) => {
         </button>
 
         <Link
-          to={`/issueDetails/${issue.trackingId}`}
+          to={`/issue-details/${issue._id}`}
           className="flex items-center gap-2 bg-primary  text-white text-sm px-4 py-2 rounded-lg"
         >
           <Eye size={16} />
