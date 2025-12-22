@@ -20,6 +20,7 @@ import ManageUsers from "../pages/Dashboard/Admin/ManageUsers";
 import Payment from "../pages/Dashboard/Admin/Payment";
 import AdminProfile from "../pages/Common/AdminProfile";
 import ManageStaff from "../pages/Dashboard/Admin/ManageStaff";
+import StaffProfile from "../pages/Common/StaffProfile";
 
 export const router = createBrowserRouter([
   {
@@ -72,10 +73,15 @@ export const router = createBrowserRouter([
         path: "payment-cancelled",
         element: <PaymentCancelled></PaymentCancelled>,
       },
-
+      
+       //staff only routes
       {
         path: "/dashboard/assigned-issue",
         element: <AssignedIssues></AssignedIssues>,
+      },
+      {
+        path:"/dashboard/staff-profile",
+        element:<StaffProfile></StaffProfile>
       },
       // admin only routes
       {

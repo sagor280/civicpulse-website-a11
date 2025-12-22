@@ -160,7 +160,7 @@ const DashboardLayout = () => {
                 {/* My Profile */}
                 <li>
                   <NavLink
-                    to="/dashboard/profile"
+                    to="/dashboard/staff-profile"
                     className="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-300 hover:bg-white/20 text-base is-drawer-close:tooltip is-drawer-close:tooltip-right"
                     data-tip="My Profile"
                   >
