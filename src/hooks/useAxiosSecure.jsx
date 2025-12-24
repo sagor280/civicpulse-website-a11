@@ -5,7 +5,7 @@ import useAuth from './useAuth'
 
 
 const axiosSecure = axios.create({
-    baseURL: 'http://localhost:3000'
+    baseURL: 'https://civicpulse-server-clean.vercel.app'
 })
 
 const useAxiosSecure = () => {

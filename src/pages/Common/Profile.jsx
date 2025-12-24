@@ -8,6 +8,8 @@ import LoadingSpinner from "../../Component/LoadingSpinner/LoadingSpinner";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
 import { uploadImageToImgbb } from "../../utils/uploadImage";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import PDFcomponent from "../../Component/PDF/PDFcomponent";
 
 const Profile = () => {
   const { user, updateUserProfile } = useAuth();
@@ -16,7 +18,11 @@ const Profile = () => {
   const [photoFile, setPhotoFile] = useState(null);
 
   // 🔹 Load profile from DB
-  const { data: profile = [], isLoading, refetch } = useQuery({
+  const {
+    data: profile = [],
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ["profile", user?.email],
     enabled: !!user?.email,
     queryFn: async () => {
@@ -28,7 +34,7 @@ const Profile = () => {
   if (isLoading) return <LoadingSpinner />;
   const currentUser = profile[0];
 
-   const handlePhotoChange = (e) => setPhotoFile(e.target.files[0]);
+  const handlePhotoChange = (e) => setPhotoFile(e.target.files[0]);
 
   // 🔹 PAYMENT (Stripe checkout)
   const setShowPayment = (userData) => {
@@ -68,15 +74,15 @@ const Profile = () => {
 
     try {
       // Firebase update
-        let photoURL = currentUser?.photoURL || null;
-        if (photoFile) photoURL = await uploadImageToImgbb(photoFile);
-      await updateUserProfile(name,photoURL);
+      let photoURL = currentUser?.photoURL || null;
+      if (photoFile) photoURL = await uploadImageToImgbb(photoFile);
+      await updateUserProfile(name, photoURL);
 
       // DB update
       await axiosSecure.patch(`/users/${currentUser._id}`, {
         displayName: name,
         phone,
-        photoURL
+        photoURL,
       });
 
       toast.success("Profile updated successfully");
@@ -91,7 +97,6 @@ const Profile = () => {
   return (
     <div className="min-h-screen p-4 md:p-8">
       <div className="max-w-2xl mx-auto space-y-6">
-
         {/* ================= PROFILE HEADER ================= */}
         <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-4 flex flex-col sm:flex-row items-center gap-4">
           <div className="w-16 h-16 rounded-full bg-indigo-900 text-white flex items-center justify-center overflow-hidden">
@@ -136,8 +141,8 @@ const Profile = () => {
             </div>
 
             <p className="text-gray-600">
-              Get unlimited issue submissions and priority support for just ৳1000
-              one-time payment.
+              Get unlimited issue submissions and priority support for just
+              ৳1000 one-time payment.
             </p>
 
             <ul className="space-y-2 text-sm">
@@ -153,6 +158,20 @@ const Profile = () => {
               <Crown className="h-5 w-5 text-yellow-300" />
               Subscribe for ৳1000
             </button>
+            <PDFDownloadLink
+              document={<PDFcomponent payment={p} />}
+              fileName={`invoice_${p.transactionId}.pdf`}
+              style={{
+                padding: "6px 12px",
+                backgroundColor: "#4CAF50",
+                color: "white",
+                borderRadius: "4px",
+                fontSize: "12px",
+                textDecoration: "none",
+              }}
+            >
+              {({ loading }) => (loading ? "Generating..." : "Download")}
+            </PDFDownloadLink>
           </div>
         )}
 
@@ -197,7 +216,7 @@ const Profile = () => {
               </div>
             </div>
 
-             {/* ================= IMAGE UPLOAD ================= */}
+            {/* ================= IMAGE UPLOAD ================= */}
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Profile Photo
@@ -209,10 +228,11 @@ const Profile = () => {
                   onChange={handlePhotoChange}
                   className="block w-full border border-gray-300 rounded-md p-2"
                 />
-                {photoFile && <span className="text-gray-500">{photoFile.name}</span>}
+                {photoFile && (
+                  <span className="text-gray-500">{photoFile.name}</span>
+                )}
               </div>
             </div>
-            
 
             {/* Phone */}
             <div>
@@ -244,4 +264,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default Profile; 

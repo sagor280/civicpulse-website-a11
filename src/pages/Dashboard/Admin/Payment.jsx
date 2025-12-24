@@ -2,6 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import LoadingSpinner from "../../../Component/LoadingSpinner/LoadingSpinner";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import PDFcomponent from "../../../Component/PDF/PDFcomponent";
+
 
 const Payment = () => {
   const axiosSecure = useAxiosSecure();
@@ -58,6 +61,7 @@ const Payment = () => {
               <th className="px-6 py-4">Amount</th>
               <th className="px-6 py-4">Status</th>
               <th className="px-6 py-4">Date</th>
+              <th className="px-6 py-4">Invoice</th>
             </tr>
           </thead>
           <tbody className="divide-y border-t border-gray-200">
@@ -67,7 +71,9 @@ const Payment = () => {
                   key={p.transactionId}
                   className="hover:bg-gray-100 border-b border-gray-200"
                 >
-                  <td className="px-6 py-4 font-mono text-xs">{p.transactionId}</td>
+                  <td className="px-6 py-4 font-mono text-xs">
+                    {p.transactionId}
+                  </td>
                   <td className="px-6 py-4 text-sm">
                     {p.email || p.customerEmail || p.createrEmail || "N/A"}
                   </td>
@@ -79,7 +85,9 @@ const Payment = () => {
                           : "bg-blue-100 text-blue-600"
                       }`}
                     >
-                      {p.paymentType === "Subscription" ? "Subscription" : "Boost"}
+                      {p.paymentType === "Subscription"
+                        ? "Subscription"
+                        : "Boost"}
                     </span>
                   </td>
                   <td className="px-6 py-4 font-semibold">৳{p.amount}</td>
@@ -91,11 +99,29 @@ const Payment = () => {
                   <td className="px-6 py-4 text-gray-500">
                     {new Date(p.paidAt).toLocaleString()}
                   </td>
+                  <td className="px-6 py-4 text-center">
+                    <PDFDownloadLink
+                      document={<PDFcomponent payment={p} />}
+                      fileName={`invoice_${p.transactionId}.pdf`}
+                      style={{
+                        padding: "6px 12px",
+                        backgroundColor: "#4CAF50",
+                        color: "white",
+                        borderRadius: "4px",
+                        fontSize: "12px",
+                        textDecoration: "none",
+                      }}
+                    >
+                      {({ loading }) =>
+                        loading ? "Generating..." : "Download"
+                      }
+                    </PDFDownloadLink>
+                  </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={6} className="text-center py-10 text-gray-400">
+                <td colSpan={7} className="text-center py-10 text-gray-400">
                   No payments found
                 </td>
               </tr>

@@ -30,6 +30,8 @@ import AllIssues from "../pages/AllIssues/AllIssues";
 import IssueDetails from "../pages/AllIssues/IssueDetails";
 import StaffOverview from "../pages/Dashboard/Staff/StaffOverview";
 import CitizenOverview from "../pages/Dashboard/Citizen/CitizenOverview";
+import HowItWork from "../pages/Home/HowItWork/HowItWork";
+import AboutSection from "../pages/Home/About/AboutSection";
 
 
 export const router = createBrowserRouter([
@@ -50,6 +52,14 @@ export const router = createBrowserRouter([
         element:<PrivateRoute><IssueDetails></IssueDetails></PrivateRoute>,
         
       },
+      {
+        path:'how-it-works',
+        element:<HowItWork></HowItWork>
+      },
+      {
+        path:'about',
+        element:<AboutSection></AboutSection>
+      }
      
     ],
   },
