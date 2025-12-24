@@ -1,12 +1,22 @@
 import { useNavigate, useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { MdHowToVote } from "react-icons/md";
-import { MapPin, Clock, User, Zap } from "lucide-react";
+import { MapPin, Clock, User, Zap, CheckCircle, XCircle } from "lucide-react";
 import Swal from "sweetalert2";
+import { useState } from "react";
 
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../hooks/useAuth";
 import LoadingSpinner from "../../Component/LoadingSpinner/LoadingSpinner";
+import { uploadImageToImgbb } from "../../utils/uploadImage";
+import { BiSolidLike } from "react-icons/bi";
+
+const statusColors = {
+  pending: "bg-gray-100 text-gray-800",
+  "in-progress": "bg-blue-100 text-blue-800",
+  resolved: "bg-green-100 text-green-800",
+  closed: "bg-red-100 text-red-800",
+};
 
 const IssueDetails = () => {
   const { id } = useParams();
@@ -14,12 +24,10 @@ const IssueDetails = () => {
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
 
-  /* ================= ISSUE DETAILS ================= */
-  const {
-    data: issue,
-    isLoading,
-    refetch,
-  } = useQuery({
+  const [editingIssue, setEditingIssue] = useState(null);
+
+  // ================= ISSUE DETAILS =================
+  const { data: issue, isLoading, refetch } = useQuery({
     queryKey: ["issue-details", id],
     queryFn: async () => {
       const res = await axiosSecure.get(`/issues/${id}`);
@@ -27,14 +35,12 @@ const IssueDetails = () => {
     },
   });
 
-  /* ================= TIMELINE ================= */
+  // ================= TIMELINE =================
   const { data: timeline = [] } = useQuery({
     queryKey: ["issue-timeline", issue?.trackingId],
     enabled: !!issue?.trackingId,
     queryFn: async () => {
-      const res = await axiosSecure.get(
-        `/issues/${issue.trackingId}/timeline`
-      );
+      const res = await axiosSecure.get(`/issues/${issue.trackingId}/timeline`);
       return res.data;
     },
   });
@@ -43,19 +49,18 @@ const IssueDetails = () => {
 
   const isOwner = user?.email === issue?.email;
 
-  /* ================= ACTIONS ================= */
+  // ================= ACTIONS =================
   const handleDelete = async () => {
     const result = await Swal.fire({
       title: "Are you sure?",
       icon: "warning",
       showCancelButton: true,
     });
-
     if (result.isConfirmed) {
       const res = await axiosSecure.delete(`/issues/${issue._id}`);
       if (res.data.deletedCount) {
         Swal.fire("Deleted!", "Issue deleted successfully", "success");
-        navigate("/dashboard/my-issue");
+        navigate("/dashboard/my-issues");
       }
     }
   };
@@ -94,19 +99,44 @@ const IssueDetails = () => {
     });
 
     if (result.isConfirmed) {
-      try {
-        const res = await axiosSecure.post(
-          "/payment-checkout-session/boosting",
-          paymentInfo
-        );
-        window.location.href = res.data.url; // Stripe opens
-      } catch (err) {
-        Swal.fire("Error", err.response?.data?.message || "Failed to start payment", "error");
-      }
+      const res = await axiosSecure.post("/payment-checkout-session/boosting", paymentInfo);
+      window.location.href = res.data.url;
     }
   };
 
-  /* ================= UI ================= */
+  const openEditModal = () => setEditingIssue(issue);
+  const closeEditModal = () => setEditingIssue(null);
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const formData = new FormData(e.target);
+      let imageUrl = editingIssue.image || "";
+
+      const imageFile = formData.get("imageFile");
+      if (imageFile && imageFile.size > 0) {
+        imageUrl = await uploadImageToImgbb(imageFile);
+      }
+
+      const updatedIssue = {
+        title: formData.get("title"),
+        category: formData.get("category"),
+        description: formData.get("description"),
+        location: formData.get("location"),
+        image: imageUrl,
+      };
+
+      await axiosSecure.patch(`/issues/${editingIssue._id}`, updatedIssue);
+      Swal.fire("Updated!", "Your issue has been updated.", "success");
+      closeEditModal();
+      refetch();
+    } catch (err) {
+      console.error(err);
+      Swal.fire("Error!", "Failed to update issue.", "error");
+    }
+  };
+
+  // ================= UI =================
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
       {/* BACK */}
@@ -117,7 +147,7 @@ const IssueDetails = () => {
         ← Back
       </button>
 
-      {/* MAIN */}
+      {/* MAIN GRID */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* LEFT */}
         <div className="lg:col-span-2 bg-white rounded-2xl shadow">
@@ -132,7 +162,7 @@ const IssueDetails = () => {
             {/* BADGES */}
             <div className="flex gap-2 mb-3 flex-wrap">
               <span className="badge badge-outline">{issue.category}</span>
-              <span className="badge badge-info capitalize">
+              <span className={`badge capitalize ${statusColors[issue.status]}`}>
                 {issue.status}
               </span>
               {issue.priority === "high" && (
@@ -149,26 +179,28 @@ const IssueDetails = () => {
                 <MapPin size={16} /> {issue.location}
               </span>
               <span className="flex items-center gap-1">
-                <Clock size={16} />
-                {new Date(issue.createdAt).toLocaleString()}
+                <Clock size={16} /> {new Date(issue.createdAt).toLocaleString()}
               </span>
-              <span>👍 {issue.upvotes}</span>
+              <span><BiSolidLike size={26} className="text-primary" /> {issue.upvotes}</span>
             </div>
 
-            <p className="text-gray-700 leading-relaxed">
-              {issue.description}
-            </p>
+            <p className="text-gray-700 leading-relaxed">{issue.description}</p>
 
             {/* ACTIONS */}
             <div className="flex gap-3 mt-6 flex-wrap">
               {isOwner ? (
                 <>
+                  {/* EDIT */}
                   {issue.status === "pending" && (
-                    <button className="btn btn-outline btn-info">
+                    <button
+                      onClick={openEditModal}
+                      className="btn btn-outline btn-info"
+                    >
                       Edit
                     </button>
                   )}
 
+                  {/* DELETE */}
                   <button
                     onClick={handleDelete}
                     className="btn btn-outline btn-error"
@@ -176,10 +208,11 @@ const IssueDetails = () => {
                     Delete
                   </button>
 
+                  {/* BOOST */}
                   {issue.priority !== "high" && (
                     <button
                       onClick={handleBoost}
-                      className="btn btn-warning flex items-center gap-2 animate-pulse"
+                      className="btn btn-warning flex gap-1"
                     >
                       <Zap size={16} /> Boost ৳100
                     </button>
@@ -188,9 +221,9 @@ const IssueDetails = () => {
               ) : (
                 <button
                   onClick={handleUpvote}
-                  className="btn btn-primary flex items-center gap-2"
+                  className="btn btn-primary flex gap-1"
                 >
-                  <MdHowToVote size={16} /> Upvote
+                  <MdHowToVote /> Upvote
                 </button>
               )}
             </div>
@@ -212,9 +245,7 @@ const IssueDetails = () => {
             {issue.assignedStaff ? (
               <>
                 <p>{issue.assignedStaff.name}</p>
-                <p className="text-xs text-gray-400">
-                  {issue.assignedStaff.email}
-                </p>
+                <p className="text-xs text-gray-400">{issue.assignedStaff.email}</p>
               </>
             ) : (
               <p className="text-gray-400">Not assigned yet</p>
@@ -226,23 +257,35 @@ const IssueDetails = () => {
       {/* TIMELINE */}
       <div className="bg-white rounded-2xl shadow p-6 mt-10">
         <h2 className="text-xl font-bold mb-6">Issue Timeline</h2>
-
         {timeline.length === 0 ? (
           <p className="text-gray-400">No tracking history yet</p>
         ) : (
           <ol className="relative border-l border-gray-300">
-            {timeline.map((item, index) => (
+            {[...timeline].reverse().map((item, index) => (
               <li key={index} className="mb-8 ml-6">
-                <span className="absolute -left-3 w-6 h-6 bg-indigo-600 rounded-full flex items-center justify-center text-white text-xs">
-                  ✓
+                <span
+                  className="absolute -left-3 w-6 h-6 flex items-center justify-center rounded-full text-white text-xs"
+                  style={{
+                    backgroundColor:
+                      item.status === "pending"
+                        ? "#d1d5db"
+                        : item.status === "in-progress"
+                        ? "#3b82f6"
+                        : item.status === "resolved"
+                        ? "#22c55e"
+                        : "#ef4444",
+                  }}
+                >
+                  {item.status === "resolved" ? (
+                    <CheckCircle size={12} />
+                  ) : item.status === "closed" ? (
+                    <XCircle size={12} />
+                  ) : (
+                    index + 1
+                  )}
                 </span>
-
-                <h3 className="font-semibold capitalize">
-                  {item.status}
-                </h3>
-
+                <h3 className="font-semibold capitalize">{item.status}</h3>
                 <p className="text-gray-600 text-sm">{item.message}</p>
-
                 <p className="text-xs text-gray-400 mt-1">
                   {item.role} • {new Date(item.createdAt).toLocaleString()}
                 </p>
@@ -251,6 +294,97 @@ const IssueDetails = () => {
           </ol>
         )}
       </div>
+
+      {/* EDIT MODAL */}
+      {editingIssue && (
+        <dialog open className="modal modal-bottom sm:modal-middle">
+          <div className="modal-box">
+            <h3 className="text-xl font-bold mb-4">Edit Issue</h3>
+            <form onSubmit={handleEditSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Upload Image (Optional)
+                </label>
+                <input
+                  type="file"
+                  name="imageFile"
+                  accept="image/*"
+                  className="file-input file-input-bordered w-full"
+                />
+              </div>
+
+              {/* Title */}
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text font-semibold">Title</span>
+                </label>
+                <input
+                  type="text"
+                  name="title"
+                  defaultValue={editingIssue.title}
+                  className="input input-bordered w-full"
+                  required
+                />
+              </div>
+
+              {/* Category */}
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text font-semibold">Category</span>
+                </label>
+                <input
+                  type="text"
+                  name="category"
+                  defaultValue={editingIssue.category}
+                  className="input input-bordered w-full"
+                  required
+                />
+              </div>
+
+              {/* Location */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Location
+                </label>
+                <input
+                  type="text"
+                  name="location"
+                  defaultValue={editingIssue.location}
+                  className="input input-bordered w-full"
+                />
+              </div>
+
+              {/* Description */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Description
+                </label>
+                <textarea
+                  name="description"
+                  defaultValue={editingIssue.description}
+                  className="textarea textarea-bordered w-full"
+                  rows={4}
+                  required
+                ></textarea>
+              </div>
+
+              {/* Buttons */}
+              <div className="flex justify-end gap-3 mt-4">
+                <button
+                  type="button"
+                  className="btn btn-outline"
+                  onClick={closeEditModal}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  Update
+                </button>
+              </div>
+            </form>
+          </div>
+        </dialog>
+      )}
     </div>
   );
 };

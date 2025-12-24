@@ -69,7 +69,7 @@ const DashboardLayout = () => {
               <>
                 <li>
                   <NavLink
-                    to="/dashboard"
+                    to="/dashboard/citizen-overview"
                     end
                     className="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-300 hover:bg-white/20 text-base is-drawer-close:tooltip is-drawer-close:tooltip-right"
                     data-tip="Overview"
@@ -127,9 +127,10 @@ const DashboardLayout = () => {
             {/* Staff Dashboard */}
             {role === "staff" && (
               <>
+              
                 <li>
                   <NavLink
-                    to="/dashboard"
+                    to="/dashboard/staff-overview"
                     end
                     className="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-300 hover:bg-white/20 text-base is-drawer-close:tooltip is-drawer-close:tooltip-right"
                     data-tip="Overview"
@@ -178,7 +179,7 @@ const DashboardLayout = () => {
                 {/* Dashboard Overview */}
                 <li>
                   <NavLink
-                    to="/dashboard/overview"
+                    to="/dashboard/admin-overview"
                     end
                     className="flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-white/20 transition-all"
                   >

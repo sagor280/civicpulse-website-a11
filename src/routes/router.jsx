@@ -28,6 +28,9 @@ import LoadingSpinner from "../Component/LoadingSpinner/LoadingSpinner";
 import Errorpage from "../pages/Errorpage/Errorpage";
 import AllIssues from "../pages/AllIssues/AllIssues";
 import IssueDetails from "../pages/AllIssues/IssueDetails";
+import StaffOverview from "../pages/Dashboard/Staff/StaffOverview";
+import CitizenOverview from "../pages/Dashboard/Citizen/CitizenOverview";
+
 
 export const router = createBrowserRouter([
   {
@@ -44,10 +47,10 @@ export const router = createBrowserRouter([
       },
       {
         path:'issue-details/:id',
-        element:<IssueDetails></IssueDetails>,
-        loader: () => fetch("/catagory.json").then((res) => res.json()),
-        hydrateFallbackElement: <LoadingSpinner />,
-      }
+        element:<PrivateRoute><IssueDetails></IssueDetails></PrivateRoute>,
+        
+      },
+     
     ],
   },
   { path: "/login", element: <Login /> },
@@ -63,6 +66,12 @@ export const router = createBrowserRouter([
     ),
     children: [
       // Citizen routes
+
+      {
+        path:"citizen-overview",
+        element:<UserRoute><CitizenOverview></CitizenOverview></UserRoute>
+
+      },
       {
         path: "my-issues",
         element: (
@@ -98,6 +107,14 @@ export const router = createBrowserRouter([
 
       // Staff routes
       {
+        path: "staff-overview",
+        element: (
+          <StaffRoute>
+            <StaffOverview />
+          </StaffRoute>
+        ),
+      },
+      {
         path: "assigned-issue",
         element: (
           <StaffRoute>
@@ -116,7 +133,7 @@ export const router = createBrowserRouter([
 
       // Admin routes
       {
-        path: "overview",
+        path: "admin-overview",
         element: (
           <AdminRoute>
             <AdminOverview />
