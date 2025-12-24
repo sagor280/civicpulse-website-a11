@@ -1,16 +1,58 @@
-# React + Vite
+# CivicPulse 🏙️
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern public infrastructure issue reporting and management system that helps citizens report problems and allows admins and staff to track, manage, and resolve issues efficiently.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🌐 Live Website
+Live Site URL:  
+👉 [https://civicpulse-website.web.app]
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🔐 Admin Access
+Use the following credentials to explore the admin dashboard:
 
-## Expanding the ESLint configuration
+- **Admin Email:** bdsagorkumar8@gmail.com  
+- **Admin Password:** @Sagor718952  
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+⚠️ For demo purposes only. Change credentials in production.
+
+---
+
+## 🚀 Key Features
+- ✅ Fully responsive design for mobile, tablet, and desktop devices  
+- 📊 Responsive admin dashboard with real-time data updates  
+- 🔒 Private routes remain authenticated even after page refresh  
+- 🔐 Firebase & MongoDB secrets secured using environment variables  
+- 🔔 User-friendly SweetAlert / Toast notifications for login, signup, and CRUD actions  
+- ⚡ TanStack Query used for all data fetching, caching, and re-fetching  
+- 👤 Role-based access system (Admin, Staff, Citizen)  
+- 📝 Citizens can report issues, track status, and view updates  
+- 🛠️ Admin can assign issues, update status, and manage users  
+- 📈 Real-time statistics and charts in the dashboard  
+- 🔄 Smooth UI interactions with loading states and error handling  
+- 🔍 Secure authentication using Firebase Auth  
+
+---
+
+## 🧰 Tech Stack
+- **Frontend:** React, Tailwind CSS, DaisyUI  
+- **State & Data Management:** TanStack Query  
+- **Backend:** Node.js, Express.js  
+- **Database:** MongoDB  
+- **Authentication:** Firebase  
+- **Deployment:** Firebase Hosting  
+
+---
+
+
+
+## 📌 Notes
+- Ensure all sensitive data (Firebase keys, MongoDB URI) are stored in environment variables  
+- All CRUD actions and login/signup use SweetAlert / Toast notifications  
+- Admin can assign staff, manage users, and track all issues  
+- Citizens can submit issues (with limit for free users), track, and boost priority after payment  
+
+---
+
