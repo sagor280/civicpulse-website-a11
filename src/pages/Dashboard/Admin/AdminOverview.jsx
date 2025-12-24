@@ -61,6 +61,7 @@ const AdminOverview = () => {
     queryFn: async () => {
       const res = await axiosSecure.get("/dashboard/latest-users");
       return res.data;
+     
     },
   });
 
@@ -196,7 +197,7 @@ const AdminOverview = () => {
             {latestPayments.map((payment, index) => (
               <tr key={payment._id}>
                 <td>{index + 1}</td>
-                <td>{payment.customerEmail}</td>
+                <td>{payment.customerEmail||payment.email}</td>
                 <td>{payment.amount} {payment.currency}</td>
                 <td>{new Date(payment.paidAt).toLocaleDateString()}</td>
               </tr>
@@ -221,7 +222,8 @@ const AdminOverview = () => {
             {latestUsers.map((user, index) => (
               <tr key={user._id}>
                 <td>{index + 1}</td>
-                <td>{user.displayName || "N/A"}</td>
+               <td>{user.name || user.displayName || "N/A"}</td>
+
                 <td>{user.email}</td>
                 <td className="capitalize">{user.role}</td>
               </tr>

@@ -13,8 +13,9 @@ const PaymentSuccessBoosting = () => {
   useEffect(() => {
     if (sessionId) {
       axiosSecure
-        .patch(`/payment-success-boosting?session_id=${sessionId}`)
+        .patch(`/payment-success/boosting?session_id=${sessionId}`)
         .then((res) => {
+          console.log("Payment success response:", res.data);
           setPaymentInfo({
             transactionId: res.data.transactionId,
             trackingId: res.data.trackingId,
