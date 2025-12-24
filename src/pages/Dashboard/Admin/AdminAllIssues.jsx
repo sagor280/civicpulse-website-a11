@@ -4,9 +4,11 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import LoadingSpinner from "../../../Component/LoadingSpinner/LoadingSpinner";
 import { FiEye, FiUserPlus, FiX } from "react-icons/fi";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router";
 
 const AdminAllIssues = () => {
   const axiosSecure = useAxiosSecure();
+  const navigate = useNavigate();
 
 
   const [showModal, setShowModal] = useState(false);
@@ -14,9 +16,7 @@ const AdminAllIssues = () => {
   const [staffList, setStaffList] = useState([]);
   const [selectedStaff, setSelectedStaff] = useState("");
 
-  /* ==============================
-        Fetch all issues
-     ============================== */
+
   const {
     data: issues = [],
     isLoading,
@@ -30,9 +30,7 @@ const AdminAllIssues = () => {
     },
   });
 
-  /* ==============================
-        Open Assign Staff Modal
-     ============================== */
+
   const openAssignModal = async (issue) => {
     setSelectedIssue(issue);
     setSelectedStaff("");
@@ -46,9 +44,7 @@ const AdminAllIssues = () => {
     }
   };
 
-  /* ==============================
-        Assign Staff Handler
-     ============================== */
+  
   const handleAssignStaff = async () => {
     if (!selectedStaff || !selectedIssue) return;
 
@@ -77,9 +73,6 @@ const AdminAllIssues = () => {
     }
   };
 
-  /* ==============================
-        Reject Issue
-     ============================== */
   const handleRejectIssue = (issue) => {
     Swal.fire({
       title: "Are you sure?",
@@ -197,7 +190,9 @@ const AdminAllIssues = () => {
 
                   <td className="px-6 py-4">
                     <div className="flex justify-center gap-3">
-                      <button className="p-2 rounded-full hover:bg-gray-200">
+                      <button 
+                      onClick={() => navigate(`/issue-details/${issue._id}`)}
+                      className="p-2 rounded-full hover:bg-gray-200">
                         <FiEye />
                       </button>
 

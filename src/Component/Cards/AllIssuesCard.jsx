@@ -42,7 +42,7 @@ const AllIssuesCard = ({ issue, onUpvote }) => {
           </h3>
 
           <span
-            className={`text-xs px-3 py-1 rounded-full border ${
+            className={`text-xs px-3 py-1 bg-[#dcfce7] text-green rounded-full border border-green ${
               statusColor[issue.status]
             }`}
           >
